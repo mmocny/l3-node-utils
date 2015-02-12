@@ -30,9 +30,9 @@ let path = exports.path = require('path');
 // run('git', ['arg1', 'arg2', 'arg3'])
 // run('git', 'arg1', 'arg2', 'arg3')
 // run('git', 'arg1 arg2 arg3')
-// run('git', { silent: true }, ['arg1', 'arg2', 'arg3'])
-// run('git', { silent: true }, 'arg1', 'arg2', 'arg3')
-// run('git', { silent: true }, 'arg1 arg2 arg3')
+// run('git', { silent: false }, ['arg1', 'arg2', 'arg3'])
+// run('git', { silent: false }, 'arg1', 'arg2', 'arg3')
+// run('git', { silent: false }, 'arg1 arg2 arg3')
 let run = exports.run = (cmd, opts = {}, ...args) => {
   if (!_.isPlainObject(opts)) {
     args.unshift(opts);
@@ -55,6 +55,11 @@ let run = exports.run = (cmd, opts = {}, ...args) => {
   });
 }
 
+// Usage:
+// spawn('git', ['arg1', 'arg2', 'arg3'])
+// spawn('git', 'arg1', 'arg2', 'arg3')
+// spawn('git', { stdio: 'ignore'  }, ['arg1', 'arg2', 'arg3'])
+// spawn('git', { stdio: 'pipe'    }, 'arg1', 'arg2', 'arg3')
 let spawn = exports.spawn = (cmd, opts = {}, ...args) => {
   if (!_.isPlainObject(opts)) {
     args.unshift(opts);
@@ -97,11 +102,13 @@ let hub = exports.hub = run.bind(null, 'hub');
 
 let runTests = () => {
   var tests = [
-    () => run('ls', '/'),
-    () => run('ls', ['/']),
+    () => run('ls', '/', '~'),
+    () => run('ls', '/ ~'),
+    () => run('ls', ['/', '~']),
     () => git('remote -v'),
-    () => spawn('ls', '/'),
-    () => spawn('ls', ['/']),
+    () => hub('remote -v'),
+    () => spawn('ls', '/', '/Users/mmocny'),
+    () => spawn('ls', ['/', '/Users/mmocny']),
     ]
     .map((pf) => {
       return () =>
