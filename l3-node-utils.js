@@ -5,6 +5,11 @@
 // Usage:
 // require('l3-node-utils/global')
 
+// TODO: change usage such that this script imports another, so you don't need the above require
+// instead, the rnode wrapper would set NODE_PATH, run this, which projects globals (6to5, shelljs, our helpers..)
+// and then finally requires the path to the script original requested to run.
+// Implication: require.main !== module, but perhaps we can change that?
+
 /******************************************************************************/
 
 // TODO: right now, rnode runs 6to5 automatically, but perhaps we can use the following to replace require instead?
