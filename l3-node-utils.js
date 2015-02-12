@@ -107,7 +107,7 @@ let runTests = () => {
       return () =>
         pf()
           .then((output) => {
-            if (output !== undefined)
+            if (!_.isUndefined(output))
               console.log(output)
           })
           .catch(console#error)
