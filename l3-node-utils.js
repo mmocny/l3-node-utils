@@ -40,19 +40,18 @@ let run = exports.run = (cmd, opts = {}, ...args) => {
   }
   opts.silent ?= true;
   opts.echoCommand ?= true;
+
   let command = `${cmd} ${_.flatten(args).join(' ')}`;
 
-  return Q.Promise(function(resolve, reject) {
-    if (opts.echoCommand) {
-      console.info('[Running]:', command);
-    }
+  if (opts.echoCommand) {
+    console.info('[Running]:', command);
+  }
 
-    exec(command, opts, function(code, output) {
-      if (code !== 0)
-        return reject(code);
-      resolve(output);
-    });
-  });
+  return Q.nfcall(child_process.exec, command)
+    .then(([stdout, stderr]) => ({
+        stdout: stdout.trim(),
+        stderr: stderr.trim()
+      }));
 }
 
 // Usage:
@@ -69,11 +68,11 @@ let spawn = exports.spawn = (cmd, opts = {}, ...args) => {
   opts.echoCommand ?= true;
   args = _.flatten(args);
 
-  return Q.Promise(function(resolve, reject) {
-    if (opts.echoCommand) {
-      console.info('[Spawning]:', cmd, args);
-    }
+  if (opts.echoCommand) {
+    console.info('[Spawning]:', cmd, args);
+  }
 
+  return Q.Promise(function(resolve, reject) {
     let child = child_process.spawn(cmd, args, opts);
     var didReturn = false;
     child.on('error', function(e) {
@@ -114,8 +113,10 @@ let runTests = () => {
       return () =>
         pf()
           .then((output) => {
-            if (!_.isUndefined(output))
-              console.log(output)
+            if (!_.isUndefined(output.stdout))
+              console.log(output.stdout)
+            if (!_.isUndefined(output.stderr))
+              console.error(output.stderr)
           })
           .catch(console#error)
           .then(() => console.log())
