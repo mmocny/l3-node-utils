@@ -1,5 +1,3 @@
 #!/usr/bin/env bash
 
-# TODO: replace me with a node script which installs itself into global npm bin
-
-NODE_PATH="${NODE_PATH}:$(npm root -g)" 6to5-node -rg $@
+NODE_PATH="${NODE_PATH}:$(npm root -g)" babel-node -rg $@

@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "./src/l3-node-utils.js",
+  "bin": {
+    "rnode": "./rnode"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,6 +13,8 @@
   "author": "mmocny@gmail.com",
   "license": "ISC",
   "dependencies": {
+    "babel": "^4.5.5",
+    "co": "^4.4.0",
     "lodash": "^3.1.0",
     "q": "^1.1.2",
     "shelljs": "^0.3.0",
