@@ -21,8 +21,10 @@ let co = exports.co = require('co');
 /******************************************************************************/
 
 let xhr = exports.xhr = require('./xhr');
-let pSpawn = exports.pSpawn = require('./util/pSpawn');
-let pRun = exports.pRun = require('./util/pRun');
+let Enum = exports.Enum = require('./enum').Enum;
+let pSpawn = exports.pSpawn = require('./pSpawn');
+let pRun = exports.pRun = require('./pRun');
+
 let git = exports.git = pRun.bind(null, 'git');
 let hub = exports.hub = pRun.bind(null, 'hub');
 
