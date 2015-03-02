@@ -3,7 +3,10 @@
 'use strict';
 
 try {
-  require("babel/register");
+  // TODO: can set arguments to babel/register by calling it explicitly.
+  // Including ignore / targets / whitelist
+  require("babel/register")({
+  });
 } catch(e) {
 }
 

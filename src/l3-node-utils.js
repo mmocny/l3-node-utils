@@ -21,7 +21,6 @@ let co = exports.co = require('co');
 /******************************************************************************/
 
 let xhr = exports.xhr = require('./xhr');
-let Enum = exports.Enum = require('./enum').Enum;
 let pSpawn = exports.pSpawn = require('./pSpawn');
 let pRun = exports.pRun = require('./pRun');
 
@@ -51,7 +50,7 @@ let runTests = () => {
             if (!_.isUndefined(output.stderr))
               console.error(output.stderr)
           })
-          .catch(console#error)
+          .catch(console.error)
           .then(() => console.log())
     });
 

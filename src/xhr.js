@@ -6,7 +6,7 @@ let XMLHttpRequest = exports.XMLHttpRequest = require("xmlhttprequest").XMLHttpR
 
 /******************************************************************************/
 
-function xhrJSON(type, url, data) {
+function xhrRAW(type, url, data) {
   return new Promise(function(resolve, reject) {
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
@@ -20,7 +20,7 @@ function xhrJSON(type, url, data) {
           if (response.indexOf(")]}'") == 0) {
             response = response.substring(")]}'".length);
           }
-          resolve(JSON.parse(response));
+          resolve(response);
         } else {
           reject(xmlhttp.status);
         }
@@ -29,28 +29,30 @@ function xhrJSON(type, url, data) {
     xmlhttp.open(type, url, true);
     xmlhttp.setRequestHeader("Content-type", "application/json");
     xmlhttp.responseType = "application/json";
-    data = data && JSON.stringify(data);
     xmlhttp.send(data);
   });
 }
-
 /******************************************************************************/
 
-function getJSON(url) {
-  return xhrJSON("GET", url);
-}
-
-function postJSON(url, data) {
-  return xhrJSON("POST", url, data);
-}
-
-function putJSON(url, data) {
-  return xhrJSON("PUT", url, data);
+function xhrJSON(type, url, data) {
+  data = data && JSON.stringify(data);
+  return xhrRAW(type, url, data)
+    .then(function(response) {
+      return JSON.parse(response);
+    });
 }
 
 /******************************************************************************/
 
-module.exports = exports = {
-  getJSON: getJSON,
-  postJSON: postJSON,
-};
+module.exports = xhrRAW;
+
+module.exports.get = xhrRAW.bind(null, "GET");
+module.exports.post = xhrRAW.bind(null, "POST");
+module.exports.put = xhrRAW.bind(null, "PUT");
+
+module.exports.getJSON = xhrJSON.bind(null, "GET");
+module.exports.postJSON = xhrJSON.bind(null, "POST");
+module.exports.putJSON = xhrJSON.bind(null, "PUT");
+
+/******************************************************************************/
+
