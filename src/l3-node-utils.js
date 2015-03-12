@@ -1,4 +1,4 @@
-#!/usr/bin/env rnode
+#!/usr/bin/env babel-node
 
 'use strict';
 
@@ -74,9 +74,6 @@ let runTests = () => {
     let moduleTests = [
             Q,
             _,
-            child_process,
-            fs,
-            path,
             co,
             fetch,
         ].map(pkg => () => console.log(Object.getOwnPropertyNames(pkg)));
