@@ -27,9 +27,9 @@ function exportNodeModule(varName, pkg) {
 
 exportNodeModule('Q', 'q');
 exportNodeModule('_', 'lodash');
-exportNodeModule('child_process');
-exportNodeModule('fs');
-exportNodeModule('path');
+//exportNodeModule('child_process');
+//exportNodeModule('fs');
+//exportNodeModule('path');
 exportNodeModule('co');
 exportNodeModule('fetch', 'node-fetch');
 
@@ -78,7 +78,9 @@ let runTests = () => {
             fetch,
         ].map(pkg => () => console.log(Object.getOwnPropertyNames(pkg)));
 
-    [].concat(spawnRunTests, moduleTests).reduce(Q.when, Q.when()).done();
+    [].concat(spawnRunTests, moduleTests)
+        .reduce(Q.when, Q.when())
+        .catch(console.error);
 }
 
 if (require.main === module) {
