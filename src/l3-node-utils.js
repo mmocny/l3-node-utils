@@ -11,52 +11,76 @@ require('shelljs/global');
 
 /******************************************************************************/
 
-let Q = exports.Q = require('q');
-let _ = exports._ = require('lodash');
-let child_process = exports.child_process = require('child_process');
-let fs = exports.fs = require('fs');
-let path = exports.path = require('path');
-let co = exports.co = require('co');
+function exportNodeModule(varName, pkg) {
+    if (!pkg)
+        pkg = varName;
+    if (varName.startsWith('./'))
+        varName = varName.slice(2);
+    if (typeof pkg === 'string')
+        pkg = require(pkg);
+    if (varName.includes('/'))
+        throw new Error('Cannot export a module with a slash.  Provide a custom name');
+    exports[varName] = pkg;
+}
 
 /******************************************************************************/
 
-let xhr = exports.xhr = require('./xhr');
-let pSpawn = exports.pSpawn = require('./pSpawn');
-let pRun = exports.pRun = require('./pRun');
+exportNodeModule('Q', 'q');
+exportNodeModule('_', 'lodash');
+exportNodeModule('child_process');
+exportNodeModule('fs');
+exportNodeModule('path');
+exportNodeModule('co');
+exportNodeModule('fetch', 'node-fetch');
 
-let git = exports.git = pRun.bind(null, 'git');
-let hub = exports.hub = pRun.bind(null, 'hub');
+exportNodeModule('./xhr');
+exportNodeModule('./pSpawn');
+exportNodeModule('./pRun');
+exportNodeModule('ObjectFrom', './object-from');
+exportNodeModule('ObjectGetAllPropertyNames', './object-get-all-property-names');
+
+exportNodeModule('git', exports.pRun.bind(null, 'git'));
+exportNodeModule('hub', exports.pRun.bind(null, 'hub'));
 
 /******************************************************************************/
 
 let runTests = () => {
-  var tests = [
-    () => pRun('ls', '/', '~'),
-    () => pRun('ls', '/ ~'),
-    () => pRun('ls', ['/', '~']),
-    () => pSpawn('ls', '/', '/Users/mmocny'),
-    () => pSpawn('ls', ['/', '/Users/mmocny']),
-    () => git('remote -v'),
-    () => hub('remote -v'),
-    ]
-    .map((pf) => {
-      return () =>
-        pf()
-          .then((output) => {
-            if (_.isUndefined(output))
-              return;
-            if (!_.isUndefined(output.stdout))
-              console.log(output.stdout)
-            if (!_.isUndefined(output.stderr))
-              console.error(output.stderr)
-          })
-          .catch(console.error)
-          .then(() => console.log())
-    });
+    require('../global');
 
-  tests.reduce(Q.when, Q.when()).done();
+    let spawnRunTests = [
+            () => pRun('ls', '/', '~'),
+            () => pRun('ls', '/ ~'),
+            () => pRun('ls', ['/', '~']),
+            () => pSpawn('ls', '/', '/Users/mmocny'),
+            () => pSpawn('ls', ['/', '/Users/mmocny']),
+            () => git('remote -v'),
+            () => hub('remote -v'),
+        ].map(pf => () =>
+            pf().then(output => {
+                if (_.isUndefined(output))
+                    return;
+                if (!_.isUndefined(output.stdout))
+                    console.log(output.stdout)
+                if (!_.isUndefined(output.stderr))
+                    console.error(output.stderr)
+            })
+            .catch(console.error)
+            .then(() => console.log())
+        );
+
+    let moduleTests = [
+            Q,
+            _,
+            child_process,
+            fs,
+            path,
+            co,
+            fetch,
+        ].map(pkg => () => console.log(Object.getOwnPropertyNames(pkg)));
+
+    [].concat(spawnRunTests, moduleTests).reduce(Q.when, Q.when()).done();
 }
 
 if (require.main === module) {
-  runTests();
+    runTests();
 }
