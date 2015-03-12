@@ -25,13 +25,16 @@ function exportNodeModule(varName, pkg) {
 
 /******************************************************************************/
 
-exportNodeModule('Q', 'q');
-exportNodeModule('_', 'lodash');
 //exportNodeModule('child_process');
 //exportNodeModule('fs');
 //exportNodeModule('path');
+
 exportNodeModule('co');
+exportNodeModule('FormData', 'form-data');
+exportNodeModule('_', 'lodash');
 exportNodeModule('fetch', 'node-fetch');
+exportNodeModule('Q', 'q');
+exportNodeModule('XMLHttpRequest', require("xmlhttprequest").XMLHttpRequest);
 
 exportNodeModule('./xhr');
 exportNodeModule('./pSpawn');
