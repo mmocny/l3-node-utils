@@ -5,8 +5,7 @@
 try {
   // TODO: can set arguments to babel/register by calling it explicitly.
   // Including ignore / targets / whitelist
-  require("babel/register")({
-  });
+  require("babel/register");
 } catch(e) {
 }
 
